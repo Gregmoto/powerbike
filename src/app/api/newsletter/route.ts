@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { resend, FROM_EMAIL } from "@/lib/resend";
+import { getResend, FROM_EMAIL } from "@/lib/resend";
 
 export async function POST(req: NextRequest) {
   const { email } = await req.json();
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
   await prisma.subscriber.create({ data: { email } });
 
   // Välkomstmail via Resend
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM_EMAIL,
     to: email,
     subject: "Välkommen till Powerbike!",
