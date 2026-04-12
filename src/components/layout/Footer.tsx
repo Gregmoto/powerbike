@@ -1,5 +1,4 @@
 import Link from "next/link";
-import NewsletterForm from "@/components/ui/NewsletterForm";
 
 export default function Footer() {
   return (
@@ -14,10 +13,7 @@ export default function Footer() {
             <p className="text-zinc-400 text-sm leading-relaxed max-w-xs">
               Din källa för inspiration inom MC-världen. Nyheter, tester, utrustning och events sedan 2021.
             </p>
-            <div className="mt-5">
-              <p className="text-zinc-300 text-sm font-medium mb-2">Prenumerera på nyhetsbrev</p>
-              <NewsletterForm compact />
-            </div>
+            {/* Newsletter dold tillfälligt */}
           </div>
 
           {/* Kategorier */}
