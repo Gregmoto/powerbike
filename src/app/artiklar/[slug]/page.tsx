@@ -138,19 +138,8 @@ export default async function ArticlePage({ params }: Props) {
           )}
         </article>
 
-        {/* Sidebar */}
-        <aside className="space-y-8">
-          <div className="bg-gradient-to-br from-orange-500/10 to-zinc-900 border border-orange-500/20 rounded-xl p-5 sticky top-20">
-            <h3 className="text-white font-bold text-sm mb-3">Håll dig uppdaterad</h3>
-            <p className="text-zinc-400 text-xs mb-4">Prenumerera på vårt nyhetsbrev.</p>
-            <a
-              href="/"
-              className="block text-center bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition"
-            >
-              Prenumerera
-            </a>
-          </div>
-        </aside>
+        {/* Sidebar dold tillfälligt */}
+        <aside />
       </div>
 
       {/* Relaterade artiklar */}

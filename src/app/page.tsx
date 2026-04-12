@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import ArticleCard from "@/components/articles/ArticleCard";
 import Link from "next/link";
-import NewsletterForm from "@/components/ui/NewsletterForm";
 
 export const revalidate = 60;
 
@@ -102,11 +101,7 @@ export default async function HomePage() {
             </div>
           )}
 
-          <div className="bg-gradient-to-br from-orange-500/10 to-zinc-900 border border-orange-500/20 rounded-xl p-5">
-            <h3 className="text-white font-bold text-sm mb-1">Håll dig uppdaterad</h3>
-            <p className="text-zinc-400 text-xs mb-4">Få de senaste MC-nyheterna direkt i inkorgen.</p>
-            <NewsletterForm compact />
-          </div>
+          {/* Newsletter form dold tillfälligt */}
 
           <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
             <h3 className="text-white font-bold uppercase tracking-wider text-sm border-l-4 border-orange-500 pl-3 mb-4">
