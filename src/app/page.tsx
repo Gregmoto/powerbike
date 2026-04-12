@@ -1,11 +1,12 @@
 import { prisma } from "@/lib/prisma";
 import ArticleCard from "@/components/articles/ArticleCard";
+import AffiliateCard from "@/components/ads/AffiliateCard";
 import Link from "next/link";
 
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const [featuredArticles, trendingArticles, upcomingEvents] = await Promise.all([
+  const [featuredArticles, trendingArticles, upcomingEvents, inlineAds] = await Promise.all([
     prisma.article.findMany({
       where: { status: "PUBLISHED" },
       orderBy: [{ featured: "desc" }, { publishedAt: "desc" }],
@@ -22,6 +23,11 @@ export default async function HomePage() {
       where: { status: "UPCOMING", startDate: { gte: new Date() } },
       orderBy: { startDate: "asc" },
       take: 3,
+    }),
+    prisma.affiliateAd.findMany({
+      where: { active: true, position: "INLINE" },
+      orderBy: { createdAt: "desc" },
+      take: 2,
     }),
   ]);
 
@@ -62,8 +68,15 @@ export default async function HomePage() {
                 </h2>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                {trendingArticles.map((a) => (
-                  <ArticleCard key={a.id} article={a} size="medium" />
+                {trendingArticles.map((a, i) => (
+                  <>
+                    <ArticleCard key={a.id} article={a} size="medium" />
+                    {i === 3 && inlineAds[0] && (
+                      <div key="ad-0" className="sm:col-span-2">
+                        <AffiliateCard {...inlineAds[0]} inline />
+                      </div>
+                    )}
+                  </>
                 ))}
               </div>
             </section>

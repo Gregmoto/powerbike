@@ -83,6 +83,7 @@ model Article {
   imageAlt    String?
   status      ArticleStatus @default(DRAFT)
   featured    Boolean       @default(false)
+  sponsored   Boolean       @default(false)
   views       Int           @default(0)
   publishedAt DateTime?
   createdAt   DateTime      @default(now())
@@ -204,6 +205,29 @@ enum EventStatus {
   ONGOING
   PAST
   CANCELLED
+}
+
+// ─── Affiliate ──────────────────────────────────────────────────────────────
+
+model AffiliateAd {
+  id          String      @id @default(cuid())
+  title       String
+  description String?
+  imageUrl    String?
+  price       String?
+  buttonText  String      @default("Köp här")
+  url         String
+  position    AdPosition  @default(SIDEBAR)
+  active      Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("affiliate_ads")
+}
+
+enum AdPosition {
+  SIDEBAR
+  INLINE
 }
 
 // ─── Nyhetsbrev ─────────────────────────────────────────────────────────────

@@ -6,6 +6,7 @@ import ArticleCard from "@/components/articles/ArticleCard";
 import ReactionBar from "@/components/articles/ReactionBar";
 import CommentSection from "@/components/articles/CommentSection";
 import ShareButtons from "@/components/articles/ShareButtons";
+import AffiliateCard from "@/components/ads/AffiliateCard";
 
 export const revalidate = 60;
 
@@ -49,6 +50,13 @@ export default async function ArticlePage({ params }: Props) {
   // Räkna upp visningar
   await prisma.article.update({ where: { id: article.id }, data: { views: { increment: 1 } } });
 
+  // Aktiva sidebar-annonser
+  const sidebarAds = await prisma.affiliateAd.findMany({
+    where: { active: true, position: "SIDEBAR" },
+    orderBy: { createdAt: "desc" },
+    take: 3,
+  });
+
   // Relaterade artiklar
   const related = await prisma.article.findMany({
     where: { status: "PUBLISHED", categoryId: article.categoryId, id: { not: article.id } },
@@ -85,14 +93,19 @@ export default async function ArticlePage({ params }: Props) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
         {/* Artikel */}
         <article className="lg:col-span-2">
-          {/* Kategori-badge */}
-          <div className="mb-4">
+          {/* Kategori-badge + sponsrat */}
+          <div className="flex items-center gap-2 mb-4">
             <span
               className="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full"
               style={{ background: article.category.color ?? "#ef4444", color: "#fff" }}
             >
               {article.category.name}
             </span>
+            {article.sponsored && (
+              <span className="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-zinc-700 text-zinc-400 border border-zinc-600">
+                Sponsrat
+              </span>
+            )}
           </div>
 
           <h1 className="text-white text-3xl md:text-4xl font-black leading-tight mb-4">
@@ -145,8 +158,15 @@ export default async function ArticlePage({ params }: Props) {
           <CommentSection articleId={article.id} />
         </article>
 
-        {/* Sidebar dold tillfälligt */}
-        <aside />
+        {/* Sidebar */}
+        {sidebarAds.length > 0 && (
+          <aside className="space-y-4">
+            <p className="text-zinc-600 text-xs uppercase tracking-widest">Annonser</p>
+            {sidebarAds.map((ad) => (
+              <AffiliateCard key={ad.id} {...ad} />
+            ))}
+          </aside>
+        )}
       </div>
 
       {/* Relaterade artiklar */}
