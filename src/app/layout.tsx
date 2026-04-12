@@ -4,6 +4,8 @@ import { Barlow_Condensed } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geist = Geist({
   subsets: ["latin"],
@@ -41,6 +43,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Navbar />
         <div className="flex-1">{children}</div>
         <Footer />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

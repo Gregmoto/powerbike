@@ -57,13 +57,36 @@ export default async function ArticlePage({ params }: Props) {
     take: 3,
   });
 
-  // Relaterade artiklar
-  const related = await prisma.article.findMany({
-    where: { status: "PUBLISHED", categoryId: article.categoryId, id: { not: article.id } },
-    take: 3,
-    orderBy: { publishedAt: "desc" },
-    include: { category: true },
-  });
+  // Relaterade artiklar — prioritera artiklar med samma taggar, fallback på kategori
+  const tagIds = article.tags.map((t) => t.tag.id);
+  let related = tagIds.length > 0
+    ? await prisma.article.findMany({
+        where: {
+          status: "PUBLISHED",
+          id: { not: article.id },
+          tags: { some: { tagId: { in: tagIds } } },
+        },
+        take: 3,
+        orderBy: { publishedAt: "desc" },
+        include: { category: true },
+      })
+    : [];
+
+  // Fyll upp med kategori-artiklar om < 3 tagg-träffar
+  if (related.length < 3) {
+    const existing = related.map((r) => r.id);
+    const extra = await prisma.article.findMany({
+      where: {
+        status: "PUBLISHED",
+        categoryId: article.categoryId,
+        id: { not: article.id, notIn: existing },
+      },
+      take: 3 - related.length,
+      orderBy: { publishedAt: "desc" },
+      include: { category: true },
+    });
+    related = [...related, ...extra];
+  }
 
   const date = article.publishedAt
     ? new Date(article.publishedAt).toLocaleDateString("sv-SE", { day: "numeric", month: "long", year: "numeric" })
@@ -86,10 +109,29 @@ export default async function ArticlePage({ params }: Props) {
     mainEntityOfPage: { "@type": "WebPage", "@id": `https://powerbike.nu/artiklar/${article.slug}` },
   };
 
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Hem", item: "https://powerbike.nu" },
+      { "@type": "ListItem", position: 2, name: article.category.name, item: `https://powerbike.nu/${article.category.slug}` },
+      { "@type": "ListItem", position: 3, name: article.title, item: `https://powerbike.nu/artiklar/${article.slug}` },
+    ],
+  };
+
   return (
     <>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
     <div className="max-w-7xl mx-auto px-4 py-10">
+      {/* Breadcrumb */}
+      <nav className="flex items-center gap-2 text-xs text-zinc-500 mb-6">
+        <Link href="/" className="hover:text-zinc-300 transition">Hem</Link>
+        <span>/</span>
+        <Link href={`/${article.category.slug}`} className="hover:text-zinc-300 transition">{article.category.name}</Link>
+        <span>/</span>
+        <span className="text-zinc-400 truncate max-w-[200px]">{article.title}</span>
+      </nav>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
         {/* Artikel */}
         <article className="lg:col-span-2">

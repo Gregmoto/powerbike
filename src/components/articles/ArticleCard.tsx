@@ -2,6 +2,10 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Article, Category } from "@/types";
 
+// Liten grå blur-placeholder (10x10px, base64 WebP)
+const BLUR_DATA_URL =
+  "data:image/webp;base64,UklGRlYAAABXRUJQVlA4IEoAAADQAQCdASoKAAoAAUAmJYgCdAEO/gHOAAD++P/////////////////////////////////////////////////////8AA==";
+
 interface Props {
   article: Article & { category: Category };
   size?: "large" | "medium" | "small";
@@ -38,6 +42,8 @@ export default function ArticleCard({ article, size = "medium" }: Props) {
             alt={article.imageAlt ?? article.title}
             fill
             className="object-cover group-hover:scale-[1.03] transition-transform duration-500"
+            placeholder="blur"
+            blurDataURL={BLUR_DATA_URL}
             priority
           />
         ) : (
@@ -69,7 +75,7 @@ export default function ArticleCard({ article, size = "medium" }: Props) {
       <Link href={href} className="group flex gap-3 items-start py-2">
         <div className="relative w-20 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-zinc-800 ring-1 ring-zinc-700 group-hover:ring-orange-500/40 transition">
           {article.imageUrl ? (
-            <Image src={article.imageUrl} alt={article.imageAlt ?? article.title} fill className="object-cover group-hover:scale-105 transition duration-300" />
+            <Image src={article.imageUrl} alt={article.imageAlt ?? article.title} fill className="object-cover group-hover:scale-105 transition duration-300" placeholder="blur" blurDataURL={BLUR_DATA_URL} />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-2xl opacity-20">🏍</div>
           )}
@@ -100,6 +106,8 @@ export default function ArticleCard({ article, size = "medium" }: Props) {
             alt={article.imageAlt ?? article.title}
             fill
             className="object-cover group-hover:scale-[1.04] transition-transform duration-500"
+            placeholder="blur"
+            blurDataURL={BLUR_DATA_URL}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-4xl opacity-10">🏍</div>
