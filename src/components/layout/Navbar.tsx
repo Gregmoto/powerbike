@@ -81,14 +81,6 @@ export default function Navbar() {
             </button>
           )}
 
-          <Link
-            href="/butik"
-            className="hidden md:inline-flex items-center gap-1.5 bg-orange-500 hover:bg-orange-600 text-white text-sm font-bold px-4 py-1.5 rounded-lg transition uppercase tracking-wide"
-            style={{ fontFamily: "var(--font-display)" }}
-          >
-            Butik
-          </Link>
-
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="md:hidden text-zinc-400 hover:text-white p-2 transition"
@@ -123,13 +115,6 @@ export default function Navbar() {
                 </Link>
               );
             })}
-            <Link
-              href="/butik"
-              onClick={() => setMenuOpen(false)}
-              className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-bold text-orange-400"
-            >
-              Butik
-            </Link>
           </div>
           {/* Mobilsökning */}
           <div className="px-4 pb-4">
