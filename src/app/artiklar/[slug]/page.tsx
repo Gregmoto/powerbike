@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
 import ArticleCard from "@/components/articles/ArticleCard";
@@ -75,12 +76,12 @@ export default async function ArticlePage({ params }: Props) {
 
   // Fyll upp med kategori-artiklar om < 3 tagg-träffar
   if (related.length < 3) {
-    const existing = related.map((r) => r.id);
+    const excludeIds = [article.id, ...related.map((r) => r.id)];
     const extra = await prisma.article.findMany({
       where: {
         status: "PUBLISHED",
         categoryId: article.categoryId,
-        id: { not: article.id, notIn: existing },
+        id: { notIn: excludeIds },
       },
       take: 3 - related.length,
       orderBy: { publishedAt: "desc" },
