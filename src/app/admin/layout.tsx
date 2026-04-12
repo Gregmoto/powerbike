@@ -3,7 +3,11 @@ import AdminSidebar from "@/components/layout/AdminSidebar";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
-  if (!session) return null;
+
+  // Login-sidan renderas utan sidebar
+  if (!session) {
+    return <>{children}</>;
+  }
 
   return (
     <div className="min-h-screen bg-zinc-950 flex">
