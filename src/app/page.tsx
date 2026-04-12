@@ -33,7 +33,7 @@ export default async function HomePage() {
       {/* Hero Grid */}
       {featuredArticles.length > 0 ? (
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-14">
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 h-full">
             {heroArticle && <ArticleCard article={heroArticle} size="large" />}
           </div>
           <div className="flex flex-col gap-4">

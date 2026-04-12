@@ -31,7 +31,7 @@ export default function ArticleCard({ article, size = "medium" }: Props) {
   /* ── LARGE ── */
   if (size === "large") {
     return (
-      <Link href={href} className="group relative block overflow-hidden rounded-2xl aspect-[16/9] ring-1 ring-zinc-800 hover:ring-orange-500/40 transition-all duration-300">
+      <Link href={href} className="group relative block overflow-hidden rounded-2xl h-full min-h-[320px] ring-1 ring-zinc-800 hover:ring-orange-500/40 transition-all duration-300">
         {article.imageUrl ? (
           <Image
             src={article.imageUrl}
