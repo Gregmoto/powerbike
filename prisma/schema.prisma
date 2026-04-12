@@ -93,8 +93,9 @@ model Article {
   categoryId String
   category   Category   @relation(fields: [categoryId], references: [id])
 
-  tags     ArticleTag[]
-  comments Comment[]
+  tags      ArticleTag[]
+  comments  Comment[]
+  reactions Reaction[]
 
   @@map("articles")
 }
@@ -150,6 +151,24 @@ model Comment {
   article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
 
   @@map("comments")
+}
+
+model Reaction {
+  id        String       @id @default(cuid())
+  type      ReactionType
+  ipHash    String
+  createdAt DateTime     @default(now())
+
+  articleId String
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@unique([articleId, ipHash, type])
+  @@map("reactions")
+}
+
+enum ReactionType {
+  THUMBS_UP
+  FIRE
 }
 
 // ─── Events ─────────────────────────────────────────────────────────────────

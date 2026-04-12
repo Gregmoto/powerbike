@@ -10,6 +10,7 @@ const navItems = [
   { href: "/admin/kategorier", label: "Kategorier", icon: "🏷" },
   { href: "/admin/events", label: "Events", icon: "📅" },
   { href: "/admin/prenumeranter", label: "Prenumeranter", icon: "✉️" },
+  { href: "/admin/kommentarer", label: "Kommentarer", icon: "💬" },
 ];
 
 interface Props {

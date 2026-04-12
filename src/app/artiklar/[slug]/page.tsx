@@ -3,6 +3,9 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import type { Metadata } from "next";
 import ArticleCard from "@/components/articles/ArticleCard";
+import ReactionBar from "@/components/articles/ReactionBar";
+import CommentSection from "@/components/articles/CommentSection";
+import ShareButtons from "@/components/articles/ShareButtons";
 
 export const revalidate = 60;
 
@@ -136,6 +139,10 @@ export default async function ArticlePage({ params }: Props) {
               ))}
             </div>
           )}
+
+          <ShareButtons title={article.title} slug={article.slug} />
+          <ReactionBar articleId={article.id} />
+          <CommentSection articleId={article.id} />
         </article>
 
         {/* Sidebar dold tillfälligt */}
