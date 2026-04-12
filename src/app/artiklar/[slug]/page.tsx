@@ -15,7 +15,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: article.title,
     description: article.excerpt ?? undefined,
-    openGraph: { images: article.imageUrl ? [article.imageUrl] : [] },
+    openGraph: {
+      title: article.title,
+      description: article.excerpt ?? undefined,
+      type: "article",
+      publishedTime: article.publishedAt?.toISOString(),
+      modifiedTime: article.updatedAt.toISOString(),
+      section: article.category.name,
+      images: article.imageUrl ? [{ url: article.imageUrl, width: 1200, height: 630 }] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: article.title,
+      description: article.excerpt ?? undefined,
+      images: article.imageUrl ? [article.imageUrl] : [],
+    },
   };
 }
 
@@ -44,7 +58,26 @@ export default async function ArticlePage({ params }: Props) {
     ? new Date(article.publishedAt).toLocaleDateString("sv-SE", { day: "numeric", month: "long", year: "numeric" })
     : "";
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: article.title,
+    description: article.excerpt ?? undefined,
+    image: article.imageUrl ?? undefined,
+    datePublished: article.publishedAt?.toISOString(),
+    dateModified: article.updatedAt.toISOString(),
+    author: { "@type": "Person", name: article.author?.name ?? "Powerbike" },
+    publisher: {
+      "@type": "Organization",
+      name: "Powerbike",
+      logo: { "@type": "ImageObject", url: "https://powerbike.nu/logo.png" },
+    },
+    mainEntityOfPage: { "@type": "WebPage", "@id": `https://powerbike.nu/artiklar/${article.slug}` },
+  };
+
   return (
+    <>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
     <div className="max-w-7xl mx-auto px-4 py-10">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
         {/* Artikel */}
@@ -88,11 +121,10 @@ export default async function ArticlePage({ params }: Props) {
           )}
 
           {/* Innehåll */}
-          <div className="prose prose-invert prose-lg max-w-none prose-headings:text-white prose-p:text-zinc-300 prose-a:text-orange-400 prose-strong:text-white">
-            {article.content.split("\n\n").map((para, i) => (
-              <p key={i}>{para}</p>
-            ))}
-          </div>
+          <div
+            className="prose prose-invert prose-lg max-w-none prose-headings:text-white prose-p:text-zinc-300 prose-a:text-orange-400 prose-strong:text-white"
+            dangerouslySetInnerHTML={{ __html: article.content }}
+          />
 
           {/* Taggar */}
           {article.tags.length > 0 && (
@@ -133,5 +165,6 @@ export default async function ArticlePage({ params }: Props) {
         </section>
       )}
     </div>
+    </>
   );
 }
