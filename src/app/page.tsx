@@ -69,15 +69,13 @@ export default async function HomePage() {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 {trendingArticles.map((a, i) => (
-                  <>
-                    <ArticleCard key={a.id} article={a} size="medium" />
-                    {i === 3 && inlineAds[0] && (
-                      <div key="ad-0" className="sm:col-span-2">
-                        <AffiliateCard {...inlineAds[0]} inline />
-                      </div>
-                    )}
-                  </>
+                  <ArticleCard key={a.id} article={a} size="medium" />
                 ))}
+                {inlineAds[0] && (
+                  <div className="sm:col-span-2">
+                    <AffiliateCard {...inlineAds[0]} inline />
+                  </div>
+                )}
               </div>
             </section>
           )}
