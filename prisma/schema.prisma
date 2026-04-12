@@ -97,6 +97,7 @@ model Article {
   tags      ArticleTag[]
   comments  Comment[]
   reactions Reaction[]
+  bookmarks Bookmark[]
 
   @@map("articles")
 }
@@ -205,6 +206,33 @@ enum EventStatus {
   ONGOING
   PAST
   CANCELLED
+}
+
+// ─── Läsarkonton ────────────────────────────────────────────────────────────
+
+model Reader {
+  id           String     @id @default(cuid())
+  name         String
+  email        String     @unique
+  passwordHash String
+  createdAt    DateTime   @default(now())
+
+  bookmarks Bookmark[]
+
+  @@map("readers")
+}
+
+model Bookmark {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  readerId  String
+  reader    Reader  @relation(fields: [readerId], references: [id], onDelete: Cascade)
+  articleId String
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@unique([readerId, articleId])
+  @@map("bookmarks")
 }
 
 // ─── Affiliate ──────────────────────────────────────────────────────────────

@@ -7,6 +7,7 @@ import ReactionBar from "@/components/articles/ReactionBar";
 import CommentSection from "@/components/articles/CommentSection";
 import ShareButtons from "@/components/articles/ShareButtons";
 import AffiliateCard from "@/components/ads/AffiliateCard";
+import BookmarkButton from "@/components/articles/BookmarkButton";
 
 export const revalidate = 60;
 
@@ -195,7 +196,10 @@ export default async function ArticlePage({ params }: Props) {
             </div>
           )}
 
-          <ShareButtons title={article.title} slug={article.slug} />
+          <div className="flex items-center gap-3 mt-6 pt-6 border-t border-zinc-800">
+            <BookmarkButton articleId={article.id} />
+            <ShareButtons title={article.title} slug={article.slug} />
+          </div>
           <ReactionBar articleId={article.id} />
           <CommentSection articleId={article.id} />
         </article>

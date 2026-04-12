@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const navLinks = [
   { href: "/motorcyklar", label: "Motorcyklar" },
@@ -16,6 +16,11 @@ export default function Navbar() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [reader, setReader] = useState<{ name: string } | null>(null);
+
+  useEffect(() => {
+    fetch("/api/reader/me").then((r) => r.json()).then((d) => setReader(d));
+  }, [pathname]);
 
   return (
     <header className="sticky top-0 z-50 bg-zinc-950/95 backdrop-blur-md border-b border-zinc-800/60">
@@ -79,6 +84,18 @@ export default function Navbar() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </button>
+          )}
+
+          {reader ? (
+            <Link href="/profil" className="hidden md:flex items-center gap-2 text-sm text-zinc-300 hover:text-white transition">
+              <div className="w-7 h-7 rounded-full bg-orange-500/20 border border-orange-500/40 flex items-center justify-center text-orange-400 font-bold text-xs">
+                {reader.name[0].toUpperCase()}
+              </div>
+            </Link>
+          ) : (
+            <Link href="/bli-medlem" className="hidden md:inline-flex items-center gap-1.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-300 hover:text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition">
+              Bli medlem
+            </Link>
           )}
 
           <button

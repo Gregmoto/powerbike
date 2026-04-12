@@ -19,7 +19,7 @@ export default function ShareButtons({ title, slug }: Props) {
   }
 
   return (
-    <div className="flex items-center gap-3 mt-6 pt-6 border-t border-zinc-800">
+    <div className="flex items-center gap-3">
       <span className="text-zinc-500 text-sm">Dela:</span>
 
       <a
