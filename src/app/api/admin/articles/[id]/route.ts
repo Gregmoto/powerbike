@@ -23,7 +23,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
   const { id } = await params;
   const body = await req.json();
-  const { title, excerpt, content, categoryId, imageUrl, imageAlt, status, featured, tagIds } = body;
+  const { title, excerpt, content, categoryId, imageUrl, imageAlt, status, featured, tagIds, publishAt, summary } = body;
 
   const existing = await prisma.article.findUnique({ where: { id } });
   if (!existing) return NextResponse.json({ error: "Hittades inte" }, { status: 404 });
@@ -48,6 +48,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       status,
       featured,
       publishedAt: status === "PUBLISHED" && !existing.publishedAt ? new Date() : existing.publishedAt,
+      publishAt: publishAt ? new Date(publishAt) : null,
+      summary: summary ?? null,
       tags: tagIds?.length
         ? { create: tagIds.map((tagId: string) => ({ tagId })) }
         : undefined,

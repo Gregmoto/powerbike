@@ -9,6 +9,7 @@ import CommentSection from "@/components/articles/CommentSection";
 import ShareButtons from "@/components/articles/ShareButtons";
 import AffiliateCard from "@/components/ads/AffiliateCard";
 import BookmarkButton from "@/components/articles/BookmarkButton";
+import AbTestTracker from "@/components/articles/AbTestTracker";
 
 export const revalidate = 60;
 
@@ -51,6 +52,21 @@ export default async function ArticlePage({ params }: Props) {
 
   // Räkna upp visningar
   await prisma.article.update({ where: { id: article.id }, data: { views: { increment: 1 } } });
+
+  // Hämta A/B-test om det finns
+  const headlineTest = await prisma.headlineTest.findUnique({
+    where: { articleId: article.id },
+  });
+
+  // Bestäm variant med hash av article.id (konsekvent per artikel, varierar)
+  let abVariant: "A" | "B" = "A";
+  let displayTitle = article.title;
+  if (headlineTest && headlineTest.active && !headlineTest.winner) {
+    // Simple deterministic hash based on article id last char code
+    const code = article.id.charCodeAt(article.id.length - 1);
+    abVariant = code % 2 === 0 ? "A" : "B";
+    displayTitle = abVariant === "B" ? headlineTest.titleB : article.title;
+  }
 
   // Aktiva sidebar-annonser
   const sidebarAds = await prisma.affiliateAd.findMany({
@@ -152,8 +168,12 @@ export default async function ArticlePage({ params }: Props) {
             )}
           </div>
 
+          {headlineTest && headlineTest.active && !headlineTest.winner && (
+            <AbTestTracker testId={headlineTest.id} variant={abVariant} />
+          )}
+
           <h1 className="text-white text-3xl md:text-4xl font-black leading-tight mb-4">
-            {article.title}
+            {displayTitle}
           </h1>
 
           {article.excerpt && (
@@ -177,6 +197,16 @@ export default async function ArticlePage({ params }: Props) {
                 className="object-cover"
                 priority
               />
+            </div>
+          )}
+
+          {/* TL;DR */}
+          {(article as typeof article & { summary?: string | null }).summary && (
+            <div className="bg-zinc-900 border border-orange-500/30 rounded-xl p-5 mb-8">
+              <p className="text-orange-400 text-xs font-bold uppercase tracking-widest mb-3">⚡ TL;DR</p>
+              <div className="text-zinc-300 text-sm space-y-1.5 whitespace-pre-line">
+                {(article as typeof article & { summary?: string | null }).summary}
+              </div>
             </div>
           )}
 

@@ -45,7 +45,7 @@ export default function AffiliateAdminPage() {
       price: ad.price ?? "",
       buttonText: ad.buttonText,
       url: ad.url,
-      position: ad.position,
+      position: ad.position as "SIDEBAR",
       active: ad.active,
     });
     setEditId(ad.id);
@@ -178,7 +178,7 @@ export default function AffiliateAdminPage() {
               <label className="text-zinc-400 text-xs mb-1 block">Placering</label>
               <select
                 value={form.position}
-                onChange={(e) => setForm({ ...form, position: e.target.value as "SIDEBAR" | "INLINE" })}
+                onChange={(e) => setForm({ ...form, position: e.target.value as "SIDEBAR" })}
                 className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-orange-500"
               >
                 <option value="SIDEBAR">Sidebar</option>
